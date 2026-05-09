@@ -1,0 +1,1554 @@
+<!--
+  ██████╗ ███████╗███╗   ███╗ ██████╗ ████████╗███████╗██████╗ ███████╗ █████╗ ██████╗ ██╗   ██╗
+  RemoteReady EMEA — AI Career Platform for Tech Professionals
+  
+  🚀 To deploy on GitHub Pages:
+  1. Create a new repo: github.com/new  → name it "remoteready-emea"
+  2. Upload this file as: index.html
+  3. Go to Settings → Pages → Source: main branch / root
+  4. Your site is live at: https://yourusername.github.io/remoteready-emea
+  
+  🛒 To connect payments (Selar.co):
+  - Create product at selar.co → copy product URL
+  - Replace the openSelar() function URLs in the script below
+  
+  🤖 To add real AI (Claude API):
+  - Get API key at console.anthropic.com
+  - Replace the setTimeout() mock blocks in runAnalysis(), optimizeLinkedIn(), optimizeGitHub(), buildPortfolio()
+  - Use model: claude-sonnet-4-20250514
+  
+  © 2025 RemoteReady EMEA
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RemoteReady EMEA — AI Career Platform for Tech Professionals</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#f5f7fa;--surface:#e8edf3;--surface2:#dde4ed;
+  --accent:#0a9e84;--accent2:#1d4ed8;--accent3:#d97706;
+  --text:#0f1923;--text2:#4a5f75;--text3:#8fa3b8;
+  --border:rgba(0,0,0,0.09);--border2:rgba(10,158,132,0.3);
+  --green:#16a34a;--red:#dc2626;--amber:#d97706;--blue:#2563eb;
+  --font:'Outfit',sans-serif;--mono:'Fira Code',monospace;
+  --r:14px;--r2:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+
+/* light mode - no noise */
+
+/* GRID LINES */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(rgba(10,158,132,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(10,158,132,.07) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* GLOW ORBS */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(160px);opacity:.07;}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,#0a9e84,transparent 70%);top:-200px;right:-100px;}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,#1d4ed8,transparent 70%);bottom:-150px;left:-150px;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(240,244,248,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 1px 0 rgba(0,0,0,.06);
+  border-bottom:1px solid var(--border);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:1.15rem;font-weight:800;letter-spacing:-.04em;display:flex;align-items:center;gap:.4rem;}
+.logo-rr{color:var(--accent);}
+.logo-emea{color:var(--text2);font-weight:400;font-size:.9rem;}
+.logo-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.nav-tabs{display:flex;gap:.25rem;}
+.nav-tab{background:none;border:none;color:var(--text2);font-family:var(--font);font-size:.82rem;font-weight:500;padding:.4rem 1rem;border-radius:30px;cursor:pointer;transition:.15s;border:1px solid transparent;}
+.nav-tab:hover,.nav-tab.active{background:rgba(0,229,195,.08);border-color:var(--border2);color:var(--accent);}
+.nav-right{display:flex;align-items:center;gap:.8rem;}
+.badge-live{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);color:#22c55e;font-size:.62rem;font-weight:700;padding:.2rem .7rem;border-radius:20px;letter-spacing:.08em;text-transform:uppercase;}
+.btn-upgrade{background:linear-gradient(135deg,var(--accent),#00b8a0);color:#002a24;font-family:var(--font);font-size:.78rem;font-weight:700;padding:.42rem 1.1rem;border-radius:30px;border:none;cursor:pointer;transition:.15s;letter-spacing:.01em;}
+.btn-upgrade:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,229,195,.35);}
+
+/* HERO */
+.hero{position:relative;z-index:1;text-align:center;padding:5rem 2rem 3.5rem;}
+.hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,229,195,.07);border:1px solid var(--border2);color:var(--accent);font-size:.72rem;font-weight:700;padding:.38rem 1.1rem;border-radius:30px;margin-bottom:2rem;letter-spacing:.08em;text-transform:uppercase;cursor:default;}
+h1{font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:800;line-height:1.07;letter-spacing:-.04em;margin-bottom:1.2rem;}
+h1 .grad{background:linear-gradient(135deg,var(--accent) 0%,#00a8ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:1rem;color:var(--text2);max-width:580px;margin:0 auto 2.5rem;line-height:1.75;font-weight:300;}
+.hero-stats{display:flex;justify-content:center;gap:3.5rem;flex-wrap:wrap;margin-bottom:3.5rem;}
+.hs{text-align:center;}
+.hs-n{font-family:var(--mono);font-size:2rem;font-weight:500;color:var(--accent);}
+.hs-l{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;}
+.hero-cta{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+.btn-hero{padding:.85rem 2.2rem;border-radius:40px;font-size:.92rem;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font);border:none;}
+.btn-hero-p{background:linear-gradient(135deg,var(--accent),#00c4ff);color:#001f1a;}
+.btn-hero-p:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,229,195,.3);}
+.btn-hero-s{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-hero-s:hover{border-color:var(--border2);color:var(--accent);}
+
+/* TAB SWITCHER */
+.tab-switcher{display:flex;justify-content:center;gap:.4rem;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:2rem;}
+.ts-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);font-family:var(--font);font-size:.82rem;font-weight:500;padding:.55rem 1.4rem;border-radius:30px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:.4rem;}
+.ts-btn:hover,.ts-btn.active{background:rgba(0,229,195,.1);border-color:var(--border2);color:var(--accent);}
+.ts-icon{font-size:1rem;}
+
+/* MAIN LAYOUT */
+.main{position:relative;z-index:1;max-width:1380px;margin:0 auto;padding:0 1.5rem 6rem;}
+.tab-panel{display:none;animation:fadeIn .25s ease;}
+.tab-panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem;transition:border-color .2s;}
+.card-sm{padding:1.25rem;}
+.card-title{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;}
+
+/* TOOL GRID */
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+@media(max-width:860px){.tool-grid{grid-template-columns:1fr;}}
+
+/* INPUT ELEMENTS */
+textarea,input[type=text],input[type=email],input[type=url]{
+  width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:.78rem 1rem;color:var(--text);font-family:var(--font);font-size:.87rem;
+  line-height:1.6;resize:vertical;transition:border-color .2s;margin-top:.5rem;}
+textarea:focus,input:focus{outline:none;border-color:var(--accent);}
+textarea::placeholder,input::placeholder{color:var(--text3);}
+label{font-size:.74rem;color:var(--text2);font-weight:600;letter-spacing:.02em;display:block;margin-top:.9rem;}
+
+/* DROP ZONE */
+.drop-zone{border:2px dashed var(--border);border-radius:12px;padding:1.8rem 1rem;text-align:center;
+  cursor:pointer;transition:.2s;background:rgba(0,229,195,.02);}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(0,229,195,.05);}
+.dz-icon{font-size:2.2rem;margin-bottom:.5rem;}
+.dz-text{font-size:.84rem;color:var(--text2);line-height:1.5;}
+.dz-text strong{color:var(--text);}
+.dz-hint{font-size:.72rem;color:var(--text3);margin-top:.35rem;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1.5rem;border-radius:30px;
+  font-size:.84rem;font-weight:600;cursor:pointer;transition:.15s;border:none;font-family:var(--font);}
+.btn-p{background:linear-gradient(135deg,var(--accent),#00b8ff);color:#001a18;}
+.btn-p:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,229,195,.28);}
+.btn-g{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.btn-g:hover{border-color:var(--border2);color:var(--accent);}
+.btn-a{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);color:var(--amber);}
+.btn-a:hover{background:rgba(245,158,11,.18);}
+.btn-sm{padding:.35rem .9rem;font-size:.74rem;}
+.btn-row{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.2rem;}
+.btn-full{width:100%;justify-content:center;padding:.85rem;}
+
+/* WARN */
+.warn{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);border-radius:10px;
+  padding:.6rem 1rem;font-size:.76rem;color:var(--amber);margin-top:.6rem;line-height:1.5;}
+
+/* ── ANALYSIS PANEL ── */
+.analysis-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:2rem;margin-bottom:1.5rem;}
+.ap-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;}
+.ap-title{font-size:1rem;font-weight:700;letter-spacing:-.02em;}
+.ap-sub{font-size:.76rem;color:var(--text2);margin-top:.15rem;}
+
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+@media(max-width:600px){.metrics-grid{grid-template-columns:repeat(2,1fr);}}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;text-align:center;position:relative;overflow:hidden;}
+.metric::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),rgba(10,158,132,0));}
+.metric-val{font-family:var(--mono);font-size:2.2rem;font-weight:500;line-height:1;color:var(--accent);}
+.metric-lbl{font-size:.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.4rem;}
+
+/* PROGRESS BAR */
+.prog-wrap{margin-bottom:1.2rem;}
+.prog-label{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text2);margin-bottom:.4rem;}
+.prog-label span:last-child{font-family:var(--mono);font-weight:500;}
+.prog-bg{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),#00a8ff);transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+
+/* VERDICT */
+.verdict{border-radius:50px;padding:1rem 2rem;font-weight:700;font-size:.95rem;text-align:center;border:1px solid;margin:1.2rem 0;letter-spacing:.01em;}
+.v-green{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.3);color:#22c55e;}
+.v-yellow{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.3);color:#f59e0b;}
+.v-orange{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.3);color:#f97316;}
+.v-red{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#ef4444;}
+.v-idle{background:var(--bg3);border-color:var(--border);color:var(--text3);}
+
+/* KEYWORD CLOUD */
+.kw-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;background:var(--bg3);border-radius:var(--r);padding:1.25rem;margin:1rem 0;}
+@media(max-width:560px){.kw-grid{grid-template-columns:1fr;}}
+.kw-head{font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.7rem;}
+.pill{display:inline-block;border-radius:20px;padding:.22rem .8rem;font-size:.73rem;margin:.18rem;font-weight:500;border:1px solid;}
+.pill-match{background:rgba(0,229,195,.1);border-color:rgba(0,229,195,.3);color:var(--accent);}
+.pill-miss{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.2);color:#f87171;}
+.pill-neutral{background:var(--surface);border-color:var(--border);color:var(--text2);}
+
+/* COACHING */
+.coaching{background:linear-gradient(135deg,rgba(37,99,235,.07),rgba(0,229,195,.05));
+  border:1px solid rgba(37,99,235,.18);border-radius:var(--r);padding:1.4rem;margin:1rem 0;}
+.coaching-item{display:flex;gap:.9rem;align-items:flex-start;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.coaching-item:last-child{border-bottom:none;padding-bottom:0;}
+.ci-dot{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;margin-top:1px;}
+.ci-warn{background:rgba(245,158,11,.15);} .ci-ok{background:rgba(34,197,94,.15);} .ci-err{background:rgba(239,68,68,.15);} .ci-tip{background:rgba(59,130,246,.15);}
+.coaching-body{font-size:.83rem;color:var(--text2);line-height:1.55;}
+.coaching-body strong{color:var(--text);}
+
+/* AI OUTPUT BOX */
+.out-header{display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0 .5rem;}
+.out-label{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:.5rem;}
+.out-label .tag{background:rgba(0,229,195,.1);color:var(--accent);border-radius:8px;padding:.15rem .6rem;font-size:.62rem;}
+.out-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;font-family:var(--mono);font-size:.8rem;line-height:1.75;color:var(--text);white-space:pre-wrap;max-height:380px;overflow-y:auto;min-height:72px;}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--text3);padding:.28rem .8rem;border-radius:8px;font-size:.7rem;cursor:pointer;transition:.15s;font-family:var(--font);font-weight:500;}
+.copy-btn:hover{border-color:var(--border2);color:var(--accent);}
+
+/* THINKING DOTS */
+.thinking{display:flex;align-items:center;gap:.4rem;color:var(--accent);font-size:.82rem;padding:.4rem 0;}
+.dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:bounce .9s infinite;}
+.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
+@keyframes bounce{0%,80%,100%{transform:scale(0.8);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+
+/* DIVIDER */
+hr{border:none;border-top:1px solid var(--border);margin:1.75rem 0;}
+
+/* ── LINKEDIN / GITHUB SECTION ── */
+.lg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+@media(max-width:760px){.lg-grid{grid-template-columns:1fr;}}
+.score-ring-wrap{display:flex;flex-direction:column;align-items:center;margin:1.2rem 0 .5rem;}
+.score-ring-num{font-family:var(--mono);font-size:2.4rem;font-weight:500;color:var(--accent);margin-top:.5rem;}
+.score-ring-lbl{font-size:.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-top:.1rem;}
+.strength-bar{margin:.5rem 0;}
+.strength-label{display:flex;justify-content:space-between;font-size:.72rem;color:var(--text2);margin-bottom:.25rem;}
+.strength-bg{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;}
+.strength-fill{height:100%;border-radius:2px;transition:width .5s ease;}
+.sf-green{background:var(--green);}
+.sf-yellow{background:var(--amber);}
+.sf-red{background:var(--red);}
+
+/* ── PORTFOLIO SECTION ── */
+.portfolio-preview{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;}
+.pp-topbar{background:var(--surface);padding:.7rem 1rem;display:flex;align-items:center;gap:.5rem;border-bottom:1px solid var(--border);}
+.pp-dot{width:10px;height:10px;border-radius:50%;}
+.pp-url{flex:1;background:var(--bg3);border-radius:6px;padding:.25rem .8rem;font-family:var(--mono);font-size:.72rem;color:var(--text3);margin:0 .7rem;}
+.pp-body{padding:2rem;}
+
+/* PORTFOLIO CARD */
+.port-hero{display:flex;gap:2rem;align-items:center;flex-wrap:wrap;margin-bottom:2rem;}
+.port-avatar{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--accent),#0066ff);display:flex;align-items:center;justify-content:center;font-size:2.2rem;flex-shrink:0;}
+.port-name{font-size:1.6rem;font-weight:800;letter-spacing:-.03em;}
+.port-role{font-size:.9rem;color:var(--accent);font-weight:500;margin-top:.2rem;}
+.port-loc{font-size:.8rem;color:var(--text3);margin-top:.15rem;}
+.port-links{display:flex;gap:.6rem;margin-top:.6rem;flex-wrap:wrap;}
+.port-link{display:inline-flex;align-items:center;gap:.35rem;font-size:.74rem;color:var(--text2);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:.28rem .8rem;text-decoration:none;transition:.15s;}
+.port-link:hover{border-color:var(--border2);color:var(--accent);}
+.port-bio{font-size:.88rem;color:var(--text2);line-height:1.7;max-width:700px;margin-bottom:1.8rem;}
+.port-section-title{font-size:.68rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;}
+.skills-cloud{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.8rem;}
+.skill-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.3rem .85rem;font-size:.77rem;font-weight:500;color:var(--text2);}
+.skill-chip.featured{background:rgba(0,229,195,.1);border-color:var(--border2);color:var(--accent);}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.8rem;}
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;transition:.2s;}
+.proj-card:hover{border-color:var(--border2);}
+.proj-icon{font-size:1.5rem;margin-bottom:.5rem;}
+.proj-name{font-weight:700;font-size:.88rem;margin-bottom:.3rem;}
+.proj-desc{font-size:.76rem;color:var(--text2);line-height:1.5;margin-bottom:.6rem;}
+.proj-stack{display:flex;flex-wrap:wrap;gap:.25rem;}
+.proj-tag{font-size:.64rem;background:var(--bg3);border-radius:5px;padding:.15rem .5rem;color:var(--text3);}
+.exp-item{display:flex;gap:1rem;padding:.9rem 0;border-bottom:1px solid var(--border);}
+.exp-item:last-child{border-bottom:none;}
+.exp-dot{width:32px;height:32px;border-radius:10px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.exp-role{font-weight:600;font-size:.88rem;}
+.exp-co{font-size:.78rem;color:var(--accent);margin-top:.1rem;}
+.exp-date{font-size:.72rem;color:var(--text3);margin-top:.1rem;}
+
+/* ── COMPANY DIRECTORY ── */
+.dir-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;}
+.dir-controls{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;flex:1;}
+.dir-search{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--border);border-radius:30px;padding:.6rem 1.2rem;color:var(--text);font-family:var(--font);font-size:.84rem;}
+.dir-search:focus{outline:none;border-color:var(--accent);}
+select{background:var(--bg2);border:1px solid var(--border);border-radius:30px;padding:.6rem 1rem;color:var(--text);font-family:var(--font);font-size:.8rem;cursor:pointer;min-width:140px;}
+select:focus{outline:none;border-color:var(--accent);}
+.dir-count{font-size:.76rem;color:var(--text3);padding:.2rem 0;margin-bottom:1rem;}
+.companies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.co-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem 1.4rem;transition:.2s;cursor:pointer;text-decoration:none;display:block;}
+.co-card:hover{border-color:rgba(0,229,195,.28);transform:translateY(-2px);background:rgba(0,229,195,.02);}
+.co-name{font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:.3rem;}
+.co-meta{font-size:.75rem;color:var(--text3);margin-bottom:.6rem;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;}
+.co-tags{display:flex;flex-wrap:wrap;gap:.3rem;}
+.ctag{font-size:.65rem;padding:.17rem .65rem;border-radius:12px;font-weight:600;border:1px solid;}
+.t-remote{background:rgba(0,229,195,.08);border-color:rgba(0,229,195,.2);color:var(--accent);}
+.t-hybrid{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);color:var(--amber);}
+.t-country{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2);color:var(--blue);}
+.t-stack{background:var(--surface);border-color:var(--border);color:var(--text2);}
+.no-results{text-align:center;padding:4rem;color:var(--text3);}
+
+/* ── JOB ALERTS ── */
+.alerts-card{background:linear-gradient(135deg,rgba(0,229,195,.05),rgba(37,99,235,.05));
+  border:1px solid var(--border2);border-radius:var(--r2);padding:2rem;margin-bottom:1.5rem;text-align:center;}
+.alerts-icon{font-size:3rem;margin-bottom:1rem;}
+.alerts-title{font-size:1.2rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.5rem;}
+.alerts-sub{font-size:.86rem;color:var(--text2);max-width:500px;margin:0 auto 1.5rem;line-height:1.6;}
+.alert-form{display:flex;gap:.8rem;max-width:480px;margin:0 auto;flex-wrap:wrap;}
+.alert-form input{flex:1;min-width:200px;}
+.alerts-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;text-align:left;}
+.alert-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.2rem;display:flex;align-items:center;gap:.8rem;}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ad-green{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.5);}
+.ad-amber{background:var(--amber);box-shadow:0 0 6px rgba(245,158,11,.5);}
+.alert-role{font-size:.84rem;font-weight:600;margin-bottom:.15rem;}
+.alert-meta{font-size:.72rem;color:var(--text3);}
+.alert-time{font-size:.68rem;color:var(--text3);margin-left:auto;white-space:nowrap;}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:960px;margin:2rem auto;}
+@media(max-width:780px){.pricing-grid{grid-template-columns:1fr;max-width:380px;}}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:2rem;position:relative;overflow:hidden;}
+.pc.featured{border-color:rgba(0,229,195,.4);background:linear-gradient(160deg,rgba(0,229,195,.04),rgba(37,99,235,.04));}
+.pc.featured::before{content:'Most popular';position:absolute;top:16px;right:-30px;background:var(--accent);color:#001a18;font-size:.58rem;font-weight:800;padding:.3rem 3.5rem;transform:rotate(45deg);letter-spacing:.1em;text-transform:uppercase;}
+.plan-tier{font-size:.66rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.8rem;}
+.plan-price{font-family:var(--mono);font-size:3rem;font-weight:500;letter-spacing:-.04em;line-height:1;color:var(--text);}
+.plan-price sup{font-size:1.2rem;vertical-align:top;margin-top:.6rem;color:var(--text2);}
+.plan-price .cycle{font-size:.85rem;color:var(--text3);font-family:var(--font);font-weight:400;}
+.plan-note{font-size:.74rem;color:var(--text3);margin:.4rem 0 .3rem;}
+.plan-savings{display:inline-block;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:var(--green);font-size:.65rem;font-weight:700;padding:.18rem .6rem;border-radius:20px;margin-bottom:1rem;}
+.plan-desc{font-size:.82rem;color:var(--text2);line-height:1.5;margin-bottom:1.5rem;}
+.plan-features{list-style:none;margin-bottom:2rem;}
+.plan-features li{font-size:.82rem;color:var(--text2);padding:.42rem 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:.65rem;line-height:1.4;}
+.plan-features li:last-child{border-bottom:none;}
+.fi-yes{color:var(--accent);}
+.fi-no{color:var(--text3);}
+.plan-btn{width:100%;padding:.88rem;border-radius:12px;font-size:.88rem;font-weight:700;cursor:pointer;transition:.15s;font-family:var(--font);}
+.pb-free{background:transparent;border:1px solid var(--border);color:var(--text2);}
+.pb-free:hover{border-color:var(--border2);color:var(--accent);}
+.pb-pro{background:linear-gradient(135deg,var(--accent),#00b8ff);border:none;color:#001a18;}
+.pb-pro:hover{box-shadow:0 8px 24px rgba(0,229,195,.32);transform:translateY(-1px);}
+.pb-team{background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;color:white;}
+.pb-team:hover{box-shadow:0 8px 24px rgba(124,58,237,.3);transform:translateY(-1px);}
+.pricing-sub{text-align:center;font-size:.78rem;color:var(--text3);margin-top:1.5rem;line-height:1.6;}
+.pricing-sub strong{color:var(--text2);}
+
+/* SECTION HERO TEXT */
+.section-hero{text-align:center;max-width:560px;margin:0 auto 3rem;}
+.section-hero h2{font-size:1.9rem;font-weight:800;letter-spacing:-.04em;margin-bottom:.7rem;}
+.section-hero p{font-size:.9rem;color:var(--text2);line-height:1.65;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#0a9e84;border:none;border-radius:12px;padding:.8rem 1.4rem;font-size:.82rem;color:#fff;font-weight:600;display:none;z-index:200;animation:slideUp .3s ease;box-shadow:0 4px 20px rgba(10,158,132,.3);}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#e8edf3;}
+::-webkit-scrollbar-thumb{background:#b0bec5;border-radius:3px;}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center;}
+.footer-logo{font-size:1.1rem;font-weight:800;color:var(--accent);letter-spacing:-.04em;margin-bottom:.5rem;}
+.footer-tagline{font-size:.78rem;color:var(--text3);margin-bottom:1rem;}
+.footer-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;}
+.footer-link{font-size:.76rem;color:var(--text3);text-decoration:none;transition:.15s;}
+.footer-link:hover{color:var(--accent);}
+.footer-copy{font-size:.7rem;color:var(--text3);margin-top:1.5rem;}
+.selar-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);color:var(--amber);border-radius:20px;padding:.3rem .9rem;font-size:.7rem;font-weight:600;margin-top:.8rem;}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- FREE ACCESS BANNER -->
+<div id="freeBanner" style="position:relative;z-index:50;background:linear-gradient(90deg,#0a9e84,#1d4ed8);padding:.6rem 2rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;">
+  <span style="color:rgba(255,255,255,.9);font-size:.8rem;font-weight:500;">🎉 <strong style="color:#fff">Early Access — All Pro features are FREE</strong> while we're in beta. No credit card needed.</span>
+  <span style="background:rgba(255,255,255,.18);color:#fff;font-size:.7rem;font-weight:700;padding:.2rem .7rem;border-radius:20px;letter-spacing:.05em;border:1px solid rgba(255,255,255,.3);">LIMITED TIME</span>
+  <button onclick="document.getElementById('freeBanner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:1rem;padding:0;margin-left:.5rem;line-height:1;">×</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ════ NAV ════ -->
+<nav>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    <span class="logo-rr">RemoteReady</span>
+    <span class="logo-emea">EMEA</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="gotoTab('analyzer')">Analyzer</button>
+    <button class="nav-tab" onclick="gotoTab('linkedin')">LinkedIn + GitHub</button>
+    <button class="nav-tab" onclick="gotoTab('portfolio')">Portfolio</button>
+    <button class="nav-tab" onclick="gotoTab('companies')">Companies</button>
+    <button class="nav-tab" onclick="gotoTab('alerts')">Job Alerts</button>
+    <button class="nav-tab" onclick="gotoTab('pricing')">Pricing</button>
+  </div>
+  <div class="nav-right">
+    <span class="badge-live">● Live</span>
+    <button class="btn-upgrade" onclick="gotoTab('pricing')">Upgrade — €9/mo</button>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<div class="hero">
+  <div class="hero-pill"><span class="logo-dot"></span> AI-Powered · Tech Jobs Only · EMEA Focused</div>
+  <h1>Your remote tech career<br>in <span class="grad">Europe, ME &amp; Africa</span></h1>
+  <p class="hero-sub">Paste your CV. Get an instant AI analysis, recruiter-level coaching, a rewritten resume, personalized cover letter, LinkedIn optimizer, auto-built portfolio — and direct access to 70+ verified remote-friendly tech companies across EMEA.</p>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-n">70+</div><div class="hs-l">Verified Companies</div></div>
+    <div class="hs"><div class="hs-n">8</div><div class="hs-l">EMEA Countries</div></div>
+    <div class="hs"><div class="hs-n">AI</div><div class="hs-l">Powered Engine</div></div>
+    <div class="hs"><div class="hs-n">€0</div><div class="hs-l">To Start</div></div>
+  </div>
+  <div class="hero-cta">
+    <button class="btn-hero btn-hero-p" onclick="gotoTab('analyzer')">✨ Analyze my CV free</button>
+    <button class="btn-hero btn-hero-s" onclick="gotoTab('companies')">🌍 Browse companies</button>
+  </div>
+</div>
+
+<!-- ════ TAB SWITCHER ════ -->
+<div class="tab-switcher">
+  <button class="ts-btn active" data-tab="analyzer" onclick="switchTab(this,'analyzer')"><span class="ts-icon">🔍</span> CV Analyzer</button>
+  <button class="ts-btn" data-tab="linkedin" onclick="switchTab(this,'linkedin')"><span class="ts-icon">💼</span> LinkedIn + GitHub</button>
+  <button class="ts-btn" data-tab="portfolio" onclick="switchTab(this,'portfolio')"><span class="ts-icon">🎨</span> Portfolio Builder</button>
+  <button class="ts-btn" data-tab="companies" onclick="switchTab(this,'companies')"><span class="ts-icon">🌍</span> Companies</button>
+  <button class="ts-btn" data-tab="alerts" onclick="switchTab(this,'alerts')"><span class="ts-icon">🔔</span> Job Alerts</button>
+  <button class="ts-btn" data-tab="pricing" onclick="switchTab(this,'pricing')"><span class="ts-icon">💎</span> Pricing</button>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════════════════
+     TAB 1: CV ANALYZER
+══════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-analyzer">
+  <div class="tool-grid">
+    <!-- CV INPUT -->
+    <div class="card">
+      <div class="card-title">📄 Your CV / Resume</div>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleDrop(event)">
+        <div class="dz-icon">📎</div>
+        <div class="dz-text"><strong>Drop your file here</strong> or click to upload</div>
+        <div class="dz-hint" id="fileStatus">TXT auto-loads · PDF/DOCX: paste text below</div>
+        <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx" style="display:none" onchange="handleFile(event)">
+      </div>
+      <label>Full CV text (paste or auto-loaded)</label>
+      <textarea id="cvText" rows="11" placeholder="Paste your full CV here — include all experience, skills, tools, certifications and education. The more context, the better your analysis.">Senior Full-Stack Developer | 6 years experience
+Skills: React, TypeScript, Vue.js, Node.js, Express, Python, PostgreSQL, MongoDB, Docker, AWS (EC2, S3, Lambda), GitHub Actions, CI/CD, REST APIs, GraphQL
+Remote Tools: Notion, Slack, Jira, Figma, Linear, Loom — fully async-capable across time zones
+Soft Skills: Strong technical writer, documented all internal processes, led daily standups across 3 timezones
+Education: BSc Computer Science, University of Ghana, 2018
+Certifications: AWS Certified Developer Associate (2023), Scrum Master PSM I
+Previous: Senior Dev at Paystack (fintech, 3 years remote), Frontend Lead at startup in Berlin (2 years)
+GitHub: 1,200+ contributions/year, 8 open source projects, 340 stars
+Languages: English (fluent), French (conversational)</textarea>
+    </div>
+
+    <!-- JOB INPUT -->
+    <div class="card">
+      <div class="card-title">🎯 Target Job</div>
+      <label>Job Title</label>
+      <input type="text" id="jobTitle" value="Senior Full-Stack Engineer — Remote Europe">
+      <label>Job Description</label>
+      <textarea id="jobDesc" rows="7" placeholder="Paste the full job description here…">We are hiring a Senior Full-Stack Engineer to join our fully distributed product team across EU timezones. You will own features end-to-end in React, TypeScript, and Node.js. Strong PostgreSQL and GraphQL skills required. We use Docker, AWS, GitHub Actions for CI/CD. Remote collaboration via Notion and Slack; async-first culture. Must be EU timezone compatible. Bonus: Python, Kubernetes, experience in fintech or SaaS. We value clear documentation, ownership, and great async communication.</textarea>
+
+      <hr style="margin:1.2rem 0;">
+      <div class="card-title">💌 Cover Letter Details</div>
+      <label>Hiring Manager Name</label>
+      <input type="text" id="hmName" value="Anna Müller">
+      <label>Company Name</label>
+      <input type="text" id="coName" value="CloudLayer GmbH">
+      <label>Company Location</label>
+      <input type="text" id="coLoc" value="Berlin, Germany (Fully Remote)">
+      <label>Your Name</label>
+      <input type="text" id="myName" value="Kwame Asante">
+
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="runAnalysis()">✨ Analyze &amp; Generate</button>
+        <button class="btn btn-g btn-sm" onclick="resetAll()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS PANEL -->
+  <div class="analysis-panel" id="resultsPanel">
+    <div class="ap-header">
+      <div>
+        <div class="ap-title">📊 Analysis Results</div>
+        <div class="ap-sub">ATS-optimized · Recruiter-vetted · Remote-ready scoring</div>
+      </div>
+      <div id="runDate" style="font-size:.72rem;color:var(--text3);font-family:var(--mono);"></div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric"><div class="metric-val" id="mMatch">—</div><div class="metric-lbl">Match %</div></div>
+      <div class="metric"><div class="metric-val" id="mCV">—</div><div class="metric-lbl">CV Skills</div></div>
+      <div class="metric"><div class="metric-val" id="mJD">—</div><div class="metric-lbl">JD Requires</div></div>
+      <div class="metric"><div class="metric-val" id="mHit">—</div><div class="metric-lbl">Skills Matched</div></div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Keyword alignment</span><span id="pct1">0%</span></div>
+      <div class="prog-bg"><div class="prog-fill" id="pb1" style="width:0%"></div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>Remote readiness</span><span id="pct2">0%</span></div>
+      <div class="prog-bg"><div class="prog-fill" id="pb2" style="width:0%"></div></div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-label"><span>ATS pass score</span><span id="pct3">0%</span></div>
+      <div class="prog-bg"><div class="prog-fill" id="pb3" style="width:0%"></div></div>
+    </div>
+
+    <div class="verdict v-idle" id="verdict">⚖️ Run analysis to get your apply verdict</div>
+
+    <div class="kw-grid">
+      <div>
+        <div class="kw-head">🧰 Skills in your CV</div>
+        <div id="cvCloud">—</div>
+      </div>
+      <div>
+        <div class="kw-head">🎯 Job requires (green = matched)</div>
+        <div id="jdCloud">—</div>
+      </div>
+    </div>
+
+    <div class="coaching" id="coachingBox" style="display:none">
+      <div style="font-size:.72rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;">🎓 Recruiter Coaching Panel</div>
+      <div id="coachItems"></div>
+    </div>
+
+    <hr>
+
+    <div class="out-header">
+      <div class="out-label">📋 AI-Rewritten Resume <span class="tag">Remote-Ready</span></div>
+      <button class="copy-btn" onclick="copyOut('resumeOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="resumeOut">Click "Analyze &amp; Generate" to build your AI-optimized resume…</div>
+
+    <div class="out-header" style="margin-top:1.5rem;">
+      <div class="out-label">💌 Personalized Cover Letter <span class="tag">Human Tone</span></div>
+      <button class="copy-btn" onclick="copyOut('coverOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="coverOut">Your tailored cover letter will appear here…</div>
+
+    <div class="out-header" style="margin-top:1.5rem;">
+      <div class="out-label">🔖 Optimized Job Title Variants <span class="tag">ATS Titles</span></div>
+      <button class="copy-btn" onclick="copyOut('titleOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="titleOut" style="max-height:160px;">Your ATS-optimized job title suggestions will appear here…</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 2: LINKEDIN + GITHUB
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-linkedin">
+  <div class="section-hero">
+    <h2>LinkedIn &amp; GitHub Optimizer</h2>
+    <p>Paste your LinkedIn profile URL and GitHub handle. Our AI scores your profiles and generates optimized rewrites for each section — headline, summary, and featured skills.</p>
+  </div>
+
+  <div class="lg-grid">
+    <!-- LINKEDIN -->
+    <div class="card">
+      <div class="card-title">💼 LinkedIn Profile</div>
+      <label>Your LinkedIn URL</label>
+      <input type="url" id="liURL" value="https://linkedin.com/in/kwameasante" placeholder="https://linkedin.com/in/yourname">
+      <label>Current Headline</label>
+      <input type="text" id="liHeadline" value="Full-Stack Developer | React | Node | Open to Remote" placeholder="Your current LinkedIn headline">
+      <label>Current About / Summary (paste here)</label>
+      <textarea id="liSummary" rows="5" placeholder="Paste your current LinkedIn About section…">I'm a developer with 6 years of experience in React and Node.js. I enjoy working on interesting problems and am currently looking for remote opportunities in Europe.</textarea>
+      <label>Target Role</label>
+      <input type="text" id="liTarget" value="Senior Full-Stack Engineer at EU tech companies">
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="optimizeLinkedIn()">🚀 Optimize LinkedIn</button>
+      </div>
+    </div>
+
+    <!-- GITHUB -->
+    <div class="card">
+      <div class="card-title">🐙 GitHub Profile</div>
+      <label>GitHub Username</label>
+      <input type="text" id="ghUser" value="kwame-dev" placeholder="your-github-username">
+      <label>Current GitHub Bio</label>
+      <input type="text" id="ghBio" value="Full-stack dev. I build things." placeholder="Your current GitHub bio">
+      <label>Top 3 Repos (names + one-line description each)</label>
+      <textarea id="ghRepos" rows="5" placeholder="e.g.&#10;paytrack — Fintech payment dashboard React/Node&#10;openform — Open-source form builder, 340 stars&#10;devnotes — CLI developer notes tool, 120 stars">paytrack — Fintech payment reconciliation dashboard (React, Node.js, PostgreSQL)
+openform — Open-source dynamic form builder with 340 GitHub stars
+devnotes — CLI productivity tool for developers, 120 stars, 18 forks</textarea>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="optimizeGitHub()">⚡ Optimize GitHub</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINKEDIN RESULTS -->
+  <div class="analysis-panel" id="liResults" style="display:none">
+    <div class="ap-header">
+      <div class="ap-title">💼 LinkedIn Optimization Report</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;" class="lg-grid">
+      <div>
+        <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;">BEFORE — Current Profile Strength</div>
+        <div id="liScoreBefore">
+          <div class="strength-bar"><div class="strength-label"><span>Headline impact</span><span>28/100</span></div><div class="strength-bg"><div class="strength-fill sf-red" style="width:28%"></div></div></div>
+          <div class="strength-bar"><div class="strength-label"><span>Keyword density</span><span>35/100</span></div><div class="strength-bg"><div class="strength-fill sf-yellow" style="width:35%"></div></div></div>
+          <div class="strength-bar"><div class="strength-label"><span>Recruiter appeal</span><span>22/100</span></div><div class="strength-bg"><div class="strength-fill sf-red" style="width:22%"></div></div></div>
+          <div class="strength-bar"><div class="strength-label"><span>Remote signal</span><span>40/100</span></div><div class="strength-bg"><div class="strength-fill sf-yellow" style="width:40%"></div></div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;">AFTER — Projected Strength</div>
+        <div id="liScoreAfter">
+          <div class="strength-bar"><div class="strength-label"><span>Headline impact</span><span>91/100</span></div><div class="strength-bg"><div class="strength-fill sf-green" style="width:91%"></div></div></div>
+          <div class="strength-bar"><div class="strength-label"><span>Keyword density</span><span>88/100</span></div><div class="strength-bg"><div class="strength-fill sf-green" style="width:88%"></div></div></div>
+          <div class="strength-bar"><div class="strength-label"><span>Recruiter appeal</span><span>84/100</span></div><div class="strength-bg"><div class="strength-fill sf-green" style="width:84%"></div></div></div>
+          <div class="strength-bar"><div class="strength-label"><span>Remote signal</span><span>95/100</span></div><div class="strength-bg"><div class="strength-fill sf-green" style="width:95%"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="out-header">
+      <div class="out-label">✨ Optimized Headline <span class="tag">120 chars</span></div>
+      <button class="copy-btn" onclick="copyOut('liHeadOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="liHeadOut" style="max-height:80px;"></div>
+
+    <div class="out-header" style="margin-top:1rem;">
+      <div class="out-label">📝 Rewritten About Section <span class="tag">2,000 chars</span></div>
+      <button class="copy-btn" onclick="copyOut('liAboutOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="liAboutOut"></div>
+
+    <div class="out-header" style="margin-top:1rem;">
+      <div class="out-label">🔑 Featured Skills to Add <span class="tag">Top 15</span></div>
+      <button class="copy-btn" onclick="copyOut('liSkillsOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="liSkillsOut" style="max-height:120px;"></div>
+  </div>
+
+  <!-- GITHUB RESULTS -->
+  <div class="analysis-panel" id="ghResults" style="display:none">
+    <div class="ap-header"><div class="ap-title">🐙 GitHub Profile Optimization</div></div>
+    <div class="out-header">
+      <div class="out-label">⚡ Optimized Bio <span class="tag">160 chars</span></div>
+      <button class="copy-btn" onclick="copyOut('ghBioOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="ghBioOut" style="max-height:80px;"></div>
+
+    <div class="out-header" style="margin-top:1rem;">
+      <div class="out-label">📋 Profile README.md <span class="tag">Full Draft</span></div>
+      <button class="copy-btn" onclick="copyOut('ghReadmeOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="ghReadmeOut"></div>
+
+    <div class="out-header" style="margin-top:1rem;">
+      <div class="out-label">🔖 Repo Description Rewrites <span class="tag">SEO Optimized</span></div>
+      <button class="copy-btn" onclick="copyOut('ghRepoOut',this)">Copy</button>
+    </div>
+    <div class="out-box" id="ghRepoOut" style="max-height:160px;"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 3: PORTFOLIO BUILDER
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-portfolio">
+  <div class="section-hero">
+    <h2>AI Portfolio Builder</h2>
+    <p>Paste your CV and we instantly build a clean, professional developer portfolio. No templates — the AI structures it based on your actual experience and tech stack.</p>
+  </div>
+
+  <div class="card" style="max-width:680px;margin:0 auto 2rem;">
+    <div class="card-title">📄 CV Input for Portfolio</div>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:.8rem;">Use the same CV from the Analyzer tab, or paste fresh below. The AI decides layout and content based on your real experience.</p>
+    <label>Your CV (paste here)</label>
+    <textarea id="portCV" rows="9" placeholder="Paste your CV here to generate your portfolio…">Senior Full-Stack Developer | 6 years experience
+Skills: React, TypeScript, Vue.js, Node.js, Express, Python, PostgreSQL, Docker, AWS, GraphQL, CI/CD
+GitHub: 1,200+ contributions, 8 open source projects, 340 stars — github.com/kwame-dev
+Projects: paytrack (fintech dashboard), openform (OSS form builder, 340★), devnotes (CLI tool)
+LinkedIn: linkedin.com/in/kwameasante
+Location: Accra, Ghana — Open to remote roles in Europe
+Education: BSc Computer Science, University of Ghana
+Certifications: AWS Certified Developer (2023), PSM I Scrum Master</textarea>
+    <label>Your GitHub URL</label>
+    <input type="url" id="portGH" value="https://github.com/kwame-dev">
+    <label>Your LinkedIn URL</label>
+    <input type="url" id="portLI" value="https://linkedin.com/in/kwameasante">
+    <label>Your Email (shown on portfolio)</label>
+    <input type="email" id="portEmail" value="kwame@example.com">
+    <div class="btn-row">
+      <button class="btn btn-p" onclick="buildPortfolio()">🎨 Build My Portfolio</button>
+    </div>
+  </div>
+
+  <!-- PORTFOLIO PREVIEW -->
+  <div id="portfolioOutput" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:1rem;">
+      <div style="font-size:.78rem;color:var(--text2);">👇 Live portfolio preview — copy the HTML to deploy anywhere</div>
+      <div style="display:flex;gap:.6rem;">
+        <button class="btn btn-a btn-sm" onclick="downloadPortfolio()">⬇ Download HTML</button>
+        <button class="btn btn-g btn-sm" onclick="copyOut('portHTMLRaw',this)">Copy HTML</button>
+      </div>
+    </div>
+    <div class="portfolio-preview">
+      <div class="pp-topbar">
+        <div class="pp-dot" style="background:#ef4444"></div>
+        <div class="pp-dot" style="background:#f59e0b"></div>
+        <div class="pp-dot" style="background:#22c55e"></div>
+        <div class="pp-url" id="portURL">remoteready.io/kwame-dev</div>
+      </div>
+      <div class="pp-body" id="portPreview"></div>
+    </div>
+    <textarea id="portHTMLRaw" style="display:none"></textarea>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 4: COMPANY DIRECTORY
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-companies">
+  <div class="section-hero">
+    <h2>Remote Tech Companies — EMEA</h2>
+    <p>70+ verified remote-friendly tech companies across Europe, Middle East &amp; Africa. All actively hire remote engineers. Updated regularly.</p>
+  </div>
+
+  <div style="display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem;">
+    <input type="text" class="dir-search" id="coSearch" placeholder="Search company, city, stack…" oninput="filterCos()" style="flex:1;min-width:180px;margin-top:0;">
+    <select id="coCountry" onchange="filterCos()">
+      <option value="">All Countries</option>
+      <option value="Germany">🇩🇪 Germany</option>
+      <option value="Netherlands">🇳🇱 Netherlands</option>
+      <option value="Portugal">🇵🇹 Portugal</option>
+      <option value="Poland">🇵🇱 Poland</option>
+      <option value="UK">🇬🇧 UK</option>
+      <option value="UAE">🇦🇪 UAE</option>
+      <option value="South Africa">🇿🇦 South Africa</option>
+      <option value="Remote">🌍 Fully Remote</option>
+    </select>
+    <select id="coPolicy" onchange="filterCos()">
+      <option value="">All Policies</option>
+      <option value="fully">Fully Remote</option>
+      <option value="hybrid">Hybrid</option>
+    </select>
+    <select id="coStack" onchange="filterCos()">
+      <option value="">All Stacks</option>
+      <option value="React">React/Frontend</option>
+      <option value="Python">Python</option>
+      <option value="Go">Go</option>
+      <option value="Fintech">Fintech</option>
+      <option value="DevOps">DevOps/Cloud</option>
+      <option value="Open Source">Open Source</option>
+    </select>
+  </div>
+  <div class="dir-count" id="coCount"></div>
+  <div class="companies-grid" id="coGrid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 5: JOB ALERTS
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-alerts">
+  <div class="alerts-card">
+    <div class="alerts-icon">🔔</div>
+    <div class="alerts-title">Never miss a remote tech role in EMEA</div>
+    <div class="alerts-sub">Enter your email and job preferences. We monitor 70+ company career pages and top job boards daily — and alert you the moment a matching role goes live. One-click application packet included.</div>
+    <div class="alert-form">
+      <input type="email" id="alertEmail" placeholder="your@email.com" style="margin-top:0;">
+      <select id="alertRole" style="min-width:160px;">
+        <option>Frontend Engineer</option>
+        <option>Full-Stack Engineer</option>
+        <option>Backend Engineer</option>
+        <option>DevOps / SRE</option>
+        <option>Mobile Developer</option>
+        <option>Data Engineer</option>
+        <option>ML Engineer</option>
+        <option>Engineering Manager</option>
+      </select>
+      <button class="btn btn-p" onclick="subscribeAlert()">🔔 Notify me</button>
+    </div>
+    <p style="font-size:.72rem;color:var(--text3);margin-top:.8rem;">No spam. Unsubscribe anytime. We only send real matches.</p>
+  </div>
+
+  <div style="margin-bottom:1rem;font-size:.78rem;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.08em;">📡 Sample: Latest Remote Tech Roles Detected</div>
+  <div class="alerts-list" id="alertsList"></div>
+
+  <div class="card" style="margin-top:2rem;">
+    <div class="card-title">⚡ One-Click Apply Packet</div>
+    <p style="font-size:.84rem;color:var(--text2);line-height:1.6;margin-bottom:1rem;">When you get a job alert, click <strong style="color:var(--text)">Prepare Packet</strong> and we instantly generate: a tailored CV, cover letter, and LinkedIn message draft — all ready to send. You stay in control; you click apply. Faster, smarter, no legal grey zones.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:center;">
+      <div style="background:var(--bg3);border-radius:var(--r);padding:1.2rem;border:1px solid var(--border);">
+        <div style="font-size:1.5rem;margin-bottom:.4rem;">📋</div>
+        <div style="font-size:.8rem;font-weight:600;margin-bottom:.2rem;">Tailored CV</div>
+        <div style="font-size:.72rem;color:var(--text3);">Role-specific rewrite, auto-generated in seconds</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r);padding:1.2rem;border:1px solid var(--border);">
+        <div style="font-size:1.5rem;margin-bottom:.4rem;">💌</div>
+        <div style="font-size:.8rem;font-weight:600;margin-bottom:.2rem;">Cover Letter</div>
+        <div style="font-size:.72rem;color:var(--text3);">Personalized to recruiter, company &amp; role tone</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--r);padding:1.2rem;border:1px solid var(--border);">
+        <div style="font-size:1.5rem;margin-bottom:.4rem;">💬</div>
+        <div style="font-size:.8rem;font-weight:600;margin-bottom:.2rem;">LinkedIn DM Draft</div>
+        <div style="font-size:.72rem;color:var(--text3);">Warm outreach message to the hiring manager</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     TAB 6: PRICING
+══════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-pricing">
+  <div class="section-hero">
+    <h2>Simple, honest pricing</h2>
+    <p>One accepted job offer pays for 5 years of Pro. Start free — no credit card needed.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <!-- FREE -->
+    <div class="pc">
+      <div class="plan-tier">Free</div>
+      <div class="plan-price"><sup>€</sup>0 <span class="cycle">/forever</span></div>
+      <div class="plan-note">No credit card · No time limit</div>
+      <div class="plan-desc">For job seekers getting started. Full keyword analysis and the company directory, free forever.</div>
+      <ul class="plan-features">
+        <li><span class="fi-yes">✓</span> CV keyword match analysis</li>
+        <li><span class="fi-yes">✓</span> Apply / don't apply verdict</li>
+        <li><span class="fi-yes">✓</span> Match % score &amp; keyword clouds</li>
+        <li><span class="fi-yes">✓</span> Germany company directory</li>
+        <li><span class="fi-yes">✓</span> Basic cover letter template</li>
+        <li><span class="fi-no">✗</span> <span style="color:var(--text3)">AI resume rewriting</span></li>
+        <li><span class="fi-no">✗</span> <span style="color:var(--text3)">LinkedIn optimizer</span></li>
+        <li><span class="fi-no">✗</span> <span style="color:var(--text3)">Portfolio builder</span></li>
+        <li><span class="fi-no">✗</span> <span style="color:var(--text3)">Full EMEA directory (8 countries)</span></li>
+        <li><span class="fi-no">✗</span> <span style="color:var(--text3)">Job alerts</span></li>
+      </ul>
+      <button class="plan-btn pb-free" style="background:linear-gradient(135deg,#0a9e84,#1d4ed8);color:#fff;border:none;" onclick="showToast('✅ All features are free during beta!')">Get full access — free →</button>
+    </div>
+
+    <!-- PRO -->
+    <div class="pc featured">
+      <div class="plan-tier">Pro</div>
+      <div class="plan-price"><sup>€</sup>9 <span class="cycle">/month</span></div>
+      <div class="plan-savings">Save €29 annually — €79/yr</div>
+      <div class="plan-desc">For serious job seekers. Everything you need to land a remote EMEA tech role, fast.</div>
+      <ul class="plan-features">
+        <li><span class="fi-yes">✓</span> Everything in Free</li>
+        <li><span class="fi-yes">✓</span> <strong>AI-powered CV rewriting</strong></li>
+        <li><span class="fi-yes">✓</span> Personalized cover letter (human tone)</li>
+        <li><span class="fi-yes">✓</span> ATS job title optimizer</li>
+        <li><span class="fi-yes">✓</span> LinkedIn headline + About rewriter</li>
+        <li><span class="fi-yes">✓</span> GitHub profile + README optimizer</li>
+        <li><span class="fi-yes">✓</span> AI Portfolio builder (deployable HTML)</li>
+        <li><span class="fi-yes">✓</span> Full EMEA directory — 8 countries</li>
+        <li><span class="fi-yes">✓</span> Job alerts (daily email)</li>
+        <li><span class="fi-yes">✓</span> Recruiter coaching panel</li>
+        <li><span class="fi-yes">✓</span> One-click apply packet</li>
+      </ul>
+      <button class="plan-btn pb-pro" onclick="showToast('🎉 Pro is FREE during beta — just use the tool!')">Free during beta →</button>
+    </div>
+
+    <!-- TEAMS -->
+    <div class="pc">
+      <div class="plan-tier">Teams</div>
+      <div class="plan-price"><sup>€</sup>29 <span class="cycle">/seat/mo</span></div>
+      <div class="plan-note">Min. 5 seats · Billed monthly</div>
+      <div class="plan-desc">For bootcamps, career coaches &amp; universities running job placement programs.</div>
+      <ul class="plan-features">
+        <li><span class="fi-yes">✓</span> Everything in Pro</li>
+        <li><span class="fi-yes">✓</span> Bulk CV analysis dashboard</li>
+        <li><span class="fi-yes">✓</span> Cohort progress tracking</li>
+        <li><span class="fi-yes">✓</span> White-label option (your branding)</li>
+        <li><span class="fi-yes">✓</span> Priority support (24hr SLA)</li>
+        <li><span class="fi-yes">✓</span> Custom company directory (your network)</li>
+        <li><span class="fi-yes">✓</span> Candidate anonymization for GDPR</li>
+        <li><span class="fi-yes">✓</span> Invoice &amp; EU VAT receipts</li>
+        <li><span class="fi-yes">✓</span> API access (connect your own tools)</li>
+      </ul>
+      <button class="plan-btn pb-team" onclick="openSelar('team')">Contact us →</button>
+    </div>
+  </div>
+
+  <div class="pricing-sub">
+    <strong>Payments via Selar.co</strong> — supports Paystack, Flutterwave &amp; Stripe.<br>
+    EU VAT handled automatically. Cancel anytime. Refund within 7 days if not satisfied.
+  </div>
+
+  <div style="text-align:center;margin-top:1.2rem;">
+    <div class="selar-badge">🛒 Powered by Selar.co · African-founded · Global payments</div>
+  </div>
+
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:2rem;margin-top:2.5rem;max-width:680px;margin-left:auto;margin-right:auto;">
+    <div style="font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;">🚀 Launch Offer — Lifetime Deal</div>
+    <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:var(--mono);font-size:2.5rem;font-weight:500;color:var(--amber);letter-spacing:-.04em;">€29</div>
+        <div style="font-size:.72rem;color:var(--text3);">one-time · forever</div>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:.92rem;font-weight:700;margin-bottom:.3rem;">Everything in Pro — pay once, own forever</div>
+        <div style="font-size:.8rem;color:var(--text2);line-height:1.5;">Limited to first 200 users. Lock in your lifetime access before we switch to subscription-only. No recurring charges, ever.</div>
+      </div>
+      <button class="btn btn-a" onclick="openSelar('lifetime')">Grab Lifetime →</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">RemoteReady EMEA</div>
+  <div class="footer-tagline">The AI career platform built for EMEA tech professionals.</div>
+  <div class="footer-links">
+    <a href="#" class="footer-link" onclick="gotoTab('analyzer');return false">CV Analyzer</a>
+    <a href="#" class="footer-link" onclick="gotoTab('linkedin');return false">LinkedIn + GitHub</a>
+    <a href="#" class="footer-link" onclick="gotoTab('portfolio');return false">Portfolio Builder</a>
+    <a href="#" class="footer-link" onclick="gotoTab('companies');return false">Company Directory</a>
+    <a href="#" class="footer-link" onclick="gotoTab('alerts');return false">Job Alerts</a>
+    <a href="#" class="footer-link" onclick="gotoTab('pricing');return false">Pricing</a>
+    <a href="mailto:hello@remoteready.io" class="footer-link">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 RemoteReady EMEA · Built for tech professionals across Africa, Europe &amp; the Middle East · Powered by Claude AI</div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA: TECH KEYWORD LIBRARY
+// ═══════════════════════════════════════════════
+const TECH_KW=[
+  'React','Vue','Angular','Next.js','Nuxt','Svelte','TypeScript','JavaScript','HTML','CSS','Tailwind','Sass',
+  'Node.js','Express','NestJS','Django','FastAPI','Flask','Python','Go','Rust','Java','Kotlin','PHP','Ruby','Rails',
+  'PostgreSQL','MySQL','MongoDB','Redis','Elasticsearch','GraphQL','REST','API','gRPC',
+  'Docker','Kubernetes','AWS','GCP','Azure','Terraform','Ansible','CI/CD','GitHub Actions','Jenkins',
+  'Microservices','Serverless','Lambda','S3','EC2','RDS',
+  'Jest','Cypress','Playwright','Testing','TDD','BDD',
+  'Agile','Scrum','Kanban','Jira','Linear','Notion','Slack','Figma','Loom',
+  'Git','GitHub','GitLab','Bitbucket','Code Review','PR',
+  'Remote','Async','Distributed','Time zones','Documentation',
+  'React Native','Flutter','iOS','Android','Mobile',
+  'Machine Learning','AI','LLM','TensorFlow','PyTorch','Data',
+  'Fintech','SaaS','B2B','Startup','Scale-up','Open Source'
+];
+
+const REMOTE_KW=['remote','async','distributed','time zone','timezone','documentation','written communication','notion','loom','slack','overlap','self-managed','autonomous'];
+
+// ═══════════════════════════════════════════════
+// DATA: EMEA COMPANIES
+// ═══════════════════════════════════════════════
+const COMPANIES=[
+  // GERMANY
+  {name:'INNOQ',url:'https://www.innoq.com',city:'Fully Remote (DE)',country:'Germany',policy:'fully',stack:['Consulting','Architecture','Open Source'],desc:'Technology consultancy. Fully distributed team across DACH.'},
+  {name:'Shopware',url:'https://www.shopware.com',city:'Schöppingen / Remote',country:'Germany',policy:'hybrid',stack:['PHP','Vue','Open Source','E-commerce'],desc:'Leading open-source e-commerce platform. Remote-first culture.'},
+  {name:'Ecosia',url:'https://ecosia.org',city:'Berlin / Remote',country:'Germany',policy:'hybrid',stack:['React','Python','Data','Search'],desc:'Search engine that plants trees. Strong remote culture.'},
+  {name:'Giant Swarm',url:'https://giantswarm.io',city:'Cologne / Fully Remote',country:'Germany',policy:'fully',stack:['Go','Kubernetes','DevOps','Cloud'],desc:'Kubernetes platform company. 100% remote-first.'},
+  {name:'Hetzner Cloud',url:'https://www.hetzner.com',city:'Nuremberg / Remote',country:'Germany',policy:'hybrid',stack:['Go','Infrastructure','Cloud','DevOps'],desc:'Affordable cloud hosting with strong engineering culture.'},
+  {name:'SuSE',url:'https://www.suse.com',city:'Nuremberg / Fully Remote',country:'Germany',policy:'fully',stack:['Linux','Go','Open Source','DevOps'],desc:'Enterprise open-source leader. Globally distributed team.'},
+  {name:'Elastic',url:'https://www.elastic.co',city:'Berlin / Fully Remote',country:'Germany',policy:'fully',stack:['Java','Go','Elasticsearch','Data'],desc:'Search and observability platform. Remote-first company.'},
+  {name:'New Work SE',url:'https://www.new-work.se',city:'Hamburg / Remote',country:'Germany',policy:'hybrid',stack:['Kotlin','React','Product'],desc:'XING parent company. Remote roles across engineering.'},
+  {name:'Eyeo',url:'https://eyeo.com',city:'Cologne / Berlin',country:'Germany',policy:'hybrid',stack:['JavaScript','Python','Privacy','AdTech'],desc:'Adblock Plus makers. Strong remote culture, privacy-focused.'},
+  {name:'Travis CI',url:'https://travis-ci.com',city:'Berlin / Remote',country:'Germany',policy:'fully',stack:['CI/CD','Ruby','DevOps','Open Source'],desc:'Pioneering CI/CD platform, distributed team worldwide.'},
+  {name:'ownCloud',url:'https://owncloud.com',city:'Nuremberg / Remote',country:'Germany',policy:'fully',stack:['PHP','JavaScript','Open Source','Cloud'],desc:'Open-source cloud collaboration platform.'},
+  {name:'Lingoda',url:'https://www.lingoda.com',city:'Berlin / Remote',country:'Germany',policy:'hybrid',stack:['React','Node.js','EdTech','Product'],desc:'Online language learning platform with remote roles.'},
+  {name:'Uberspace',url:'https://uberspace.de',city:'Mainz / Remote',country:'Germany',policy:'fully',stack:['Linux','DevOps','Infrastructure'],desc:'Values-driven hosting company. Small, fully remote team.'},
+
+  // NETHERLANDS
+  {name:'Adyen',url:'https://www.adyen.com',city:'Amsterdam / Remote',country:'Netherlands',policy:'hybrid',stack:['Java','Python','Fintech','Payments'],desc:'Global payment platform. Hires remote engineers across EU.'},
+  {name:'Booking.com',url:'https://www.booking.com',city:'Amsterdam / Remote',country:'Netherlands',policy:'hybrid',stack:['Perl','Python','React','Scale'],desc:'Worlds largest travel platform. Large remote engineering org.'},
+  {name:'Mollie',url:'https://www.mollie.com',city:'Amsterdam / Remote',country:'Netherlands',policy:'hybrid',stack:['PHP','React','Fintech','Payments'],desc:'Fast-growing European payments company. Remote-friendly.'},
+  {name:'MessageBird',url:'https://messagebird.com',city:'Amsterdam / Fully Remote',country:'Netherlands',policy:'fully',stack:['Go','Node.js','Communications','API'],desc:'Communications platform. Distributed global team.'},
+  {name:'Miro',url:'https://miro.com',city:'Amsterdam / Remote',country:'Netherlands',policy:'hybrid',stack:['React','TypeScript','Collaboration','SaaS'],desc:'Online collaboration whiteboard. Large remote engineering team.'},
+  {name:'WeTransfer',url:'https://wetransfer.com',city:'Amsterdam / Remote',country:'Netherlands',policy:'hybrid',stack:['Ruby','React','SaaS','Creative'],desc:'File-sharing platform. Strong design-driven engineering culture.'},
+  {name:'Catawiki',url:'https://www.catawiki.com',city:'Amsterdam / Remote',country:'Netherlands',policy:'hybrid',stack:['Ruby','React','Marketplace','ML'],desc:'Online auction marketplace. Remote-friendly engineering team.'},
+
+  // PORTUGAL
+  {name:'Remote.com',url:'https://remote.com',city:'Lisbon / Fully Remote',country:'Portugal',policy:'fully',stack:['React','Node.js','HRTech','SaaS'],desc:'HR platform for hiring globally. Fully distributed team.'},
+  {name:'Feedzai',url:'https://feedzai.com',city:'Porto / Remote',country:'Portugal',policy:'hybrid',stack:['Java','ML','Fintech','AI'],desc:'AI-powered fraud prevention. Strong engineering culture.'},
+  {name:'Dashlane',url:'https://www.dashlane.com',city:'Lisbon / Remote',country:'Portugal',policy:'hybrid',stack:['React','Kotlin','Security','SaaS'],desc:'Password manager. Remote-first distributed team.'},
+  {name:'Unbabel',url:'https://unbabel.com',city:'Lisbon / Remote',country:'Portugal',policy:'hybrid',stack:['Python','NLP','AI','Translation'],desc:'AI-powered translation platform. Growing engineering team.'},
+  {name:'Sword Health',url:'https://swordhealth.com',city:'Porto / Remote',country:'Portugal',policy:'hybrid',stack:['React','Python','HealthTech','ML'],desc:'Digital physical therapy platform. Remote roles available.'},
+
+  // POLAND
+  {name:'Brainly',url:'https://brainly.com',city:'Kraków / Remote',country:'Poland',policy:'hybrid',stack:['React','PHP','EdTech','Scale'],desc:'Global homework help platform. Remote-friendly engineering.'},
+  {name:'Nexocode',url:'https://nexocode.com',city:'Kraków / Remote',country:'Poland',policy:'hybrid',stack:['Python','Java','ML','AI'],desc:'AI and data science consultancy. Remote roles across EU.'},
+  {name:'Netguru',url:'https://www.netguru.com',city:'Poznań / Fully Remote',country:'Poland',policy:'fully',stack:['Ruby','React','Consulting','Product'],desc:'Product design and development consultancy. Fully distributed.'},
+  {name:'Boldare',url:'https://www.boldare.com',city:'Gliwice / Remote',country:'Poland',policy:'hybrid',stack:['React','Node.js','Product','Agile'],desc:'Agile product design studio. Remote-first culture.'},
+  {name:'Apptension',url:'https://apptension.com',city:'Poznań / Remote',country:'Poland',policy:'hybrid',stack:['React','Python','SaaS','Product'],desc:'Software studio with remote-friendly policies.'},
+
+  // UK
+  {name:'Monzo',url:'https://monzo.com',city:'London / Remote',country:'UK',policy:'hybrid',stack:['Go','Microservices','Fintech','Mobile'],desc:'Digital bank. Strong remote-friendly engineering culture.'},
+  {name:'Farfetch',url:'https://www.farfetch.com',city:'London / Remote',country:'UK',policy:'hybrid',stack:['Python','React','E-commerce','ML'],desc:'Global luxury fashion platform. Remote engineering roles.'},
+  {name:'Deliveroo',url:'https://deliveroo.co.uk',city:'London / Remote',country:'UK',policy:'hybrid',stack:['Ruby','React Native','Logistics','Scale'],desc:'Food delivery platform. Remote engineering roles across EU.'},
+  {name:'Revolut',url:'https://www.revolut.com',city:'London / Remote',country:'UK',policy:'hybrid',stack:['Kotlin','React','Fintech','Crypto'],desc:'Global fintech super-app. Large fully remote engineering team.'},
+  {name:'Pendo',url:'https://www.pendo.io',city:'London / Remote',country:'UK',policy:'hybrid',stack:['React','Node.js','SaaS','Analytics'],desc:'Product analytics platform. Remote-friendly UK team.'},
+
+  // UAE
+  {name:'Careem',url:'https://www.careem.com',city:'Dubai / Remote',country:'UAE',policy:'hybrid',stack:['Java','Go','Mobility','Fintech'],desc:'Super-app for MENA. Engineering hubs with remote options.'},
+  {name:'Noon',url:'https://www.noon.com',city:'Dubai / Remote',country:'UAE',policy:'hybrid',stack:['Java','React','E-commerce','Scale'],desc:'MENA e-commerce giant. Growing engineering team.'},
+  {name:'Property Finder',url:'https://www.propertyfinder.ae',city:'Dubai / Remote',country:'UAE',policy:'hybrid',stack:['PHP','React','PropTech','Scale'],desc:'MENA leading property marketplace. Remote roles available.'},
+  {name:'Anghami',url:'https://www.anghami.com',city:'Dubai / Remote',country:'UAE',policy:'hybrid',stack:['iOS','Android','Streaming','React'],desc:'Music streaming for the Arab world. Remote-friendly team.'},
+  {name:'Kitopi',url:'https://kitopi.com',city:'Dubai / Remote',country:'UAE',policy:'hybrid',stack:['React','Node.js','FoodTech','Ops'],desc:'Cloud kitchen platform. Tech team with remote options.'},
+
+  // SOUTH AFRICA
+  {name:'Luno',url:'https://luno.com',city:'Cape Town / Remote',country:'South Africa',policy:'hybrid',stack:['Go','React','Crypto','Fintech'],desc:'Crypto exchange with EU-compatible remote engineering roles.'},
+  {name:'Jumo',url:'https://www.jumo.world',city:'Cape Town / Remote',country:'South Africa',policy:'hybrid',stack:['Java','Python','Fintech','ML'],desc:'Financial inclusion platform. Remote tech roles.'},
+  {name:'Carry1st',url:'https://www.carry1st.com',city:'Cape Town / Fully Remote',country:'South Africa',policy:'fully',stack:['React','Node.js','Gaming','Mobile'],desc:'Africa leading mobile games publisher. Fully remote team.'},
+  {name:'Ozow',url:'https://ozow.com',city:'Cape Town / Remote',country:'South Africa',policy:'hybrid',stack:['Java','React','Fintech','Payments'],desc:'Instant EFT payment platform. Remote engineering roles.'},
+  {name:'WhereIsMyTransport',url:'https://www.whereismytransport.com',city:'Cape Town / Remote',country:'South Africa',policy:'hybrid',stack:['Python','React','Mobility','Data'],desc:'Transit data company. Remote roles for EU-timezone overlap.'},
+
+  // FULLY REMOTE / GLOBAL
+  {name:'GitLab',url:'https://about.gitlab.com',city:'Fully Remote',country:'Remote',policy:'fully',stack:['Ruby','Go','DevOps','Open Source'],desc:'The original remote-only company. DevOps platform with 2000+ employees, 0 offices.'},
+  {name:'Basecamp',url:'https://basecamp.com',city:'Fully Remote',country:'Remote',policy:'fully',stack:['Ruby','iOS','Product','Async'],desc:'Remote work pioneers. Async-first, small distributed team.'},
+  {name:'Automattic',url:'https://automattic.com',city:'Fully Remote',country:'Remote',policy:'fully',stack:['PHP','JavaScript','WordPress','Open Source'],desc:'WordPress.com makers. 100% distributed, 1900+ Automatticians.'},
+  {name:'Toptal',url:'https://www.toptal.com',city:'Fully Remote',country:'Remote',policy:'fully',stack:['React','Node.js','Marketplace','Freelance'],desc:'Elite freelance network. All remote, all senior.'},
+  {name:'Doist',url:'https://doist.com',city:'Fully Remote',country:'Remote',policy:'fully',stack:['React','Python','SaaS','Async'],desc:'Makers of Todoist & Twist. Async-first remote-only company.'},
+];
+
+// ═══════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════
+function switchTab(btn,tab){
+  document.querySelectorAll('.ts-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const ntab=document.querySelector(`.nav-tab[onclick*="${tab}"]`);
+  if(ntab)ntab.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='companies')renderCompanies();
+  if(tab==='alerts')renderAlerts();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function gotoTab(tab){
+  const btn=document.querySelector(`.ts-btn[data-tab="${tab}"]`);
+  switchTab(btn,tab);
+}
+
+// ═══════════════════════════════════════════════
+// FILE HANDLING
+// ═══════════════════════════════════════════════
+function handleFile(e){
+  const f=e.target.files[0];if(!f)return;
+  document.getElementById('fileStatus').textContent=f.name+' loaded';
+  if(f.name.endsWith('.txt')){
+    const r=new FileReader();
+    r.onload=ev=>{document.getElementById('cvText').value=ev.target.result;};
+    r.readAsText(f);
+  } else {
+    document.getElementById('fileStatus').textContent=f.name+' — please paste text below for PDF/DOCX';
+  }
+}
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag');
+  const f=e.dataTransfer.files[0];
+  if(!f)return;
+  if(f.name.endsWith('.txt')){
+    const r=new FileReader();r.onload=ev=>{document.getElementById('cvText').value=ev.target.result;};r.readAsText(f);
+  }
+  document.getElementById('fileStatus').textContent=f.name+' loaded';
+}
+
+// ═══════════════════════════════════════════════
+// KEYWORD EXTRACTION
+// ═══════════════════════════════════════════════
+function extractKW(text){
+  const t=text.toLowerCase();
+  return TECH_KW.filter(k=>t.includes(k.toLowerCase()));
+}
+function remoteScore(text){
+  const t=text.toLowerCase();
+  const hits=REMOTE_KW.filter(k=>t.includes(k));
+  return Math.min(100,Math.round((hits.length/REMOTE_KW.length)*100));
+}
+
+// ═══════════════════════════════════════════════
+// MAIN ANALYSIS
+// ═══════════════════════════════════════════════
+function runAnalysis(){
+  const cv=document.getElementById('cvText').value;
+  const jd=document.getElementById('jobDesc').value;
+  const jt=document.getElementById('jobTitle').value;
+  const hm=document.getElementById('hmName').value;
+  const co=document.getElementById('coName').value;
+  const cl=document.getElementById('coLoc').value;
+  const me=document.getElementById('myName').value;
+
+  if(cv.length<60||jd.length<60){showToast('⚠️ Please add more detail to your CV and job description.');return;}
+
+  const cvKW=extractKW(cv);
+  const jdKW=extractKW(jd);
+  const matched=jdKW.filter(k=>cvKW.some(c=>c.toLowerCase()===k.toLowerCase()));
+  const missing=jdKW.filter(k=>!matched.some(m=>m.toLowerCase()===k.toLowerCase()));
+  const pct=jdKW.length?Math.round((matched.length/jdKW.length)*100):0;
+  const rs=remoteScore(cv);
+  const ats=Math.min(100,Math.round(pct*0.7+rs*0.3));
+
+  // metrics
+  document.getElementById('mMatch').textContent=pct+'%';
+  document.getElementById('mCV').textContent=cvKW.length;
+  document.getElementById('mJD').textContent=jdKW.length;
+  document.getElementById('mHit').textContent=matched.length;
+  document.getElementById('pct1').textContent=pct+'%';
+  document.getElementById('pb1').style.width=pct+'%';
+  document.getElementById('pct2').textContent=rs+'%';
+  document.getElementById('pb2').style.width=rs+'%';
+  document.getElementById('pct3').textContent=ats+'%';
+  document.getElementById('pb3').style.width=ats+'%';
+  document.getElementById('runDate').textContent=new Date().toLocaleString('en-GB');
+
+  // verdict
+  const vEl=document.getElementById('verdict');
+  vEl.className='verdict';
+  if(pct>=75){vEl.classList.add('v-green');vEl.textContent='🚀 Strong match — Apply with confidence. Your profile fits well.';}
+  else if(pct>=55){vEl.classList.add('v-yellow');vEl.textContent='⚡ Good match — Apply, but highlight the missing skills in your cover letter.';}
+  else if(pct>=35){vEl.classList.add('v-orange');vEl.textContent='⚠️ Moderate match — Consider upskilling on 1–2 gaps before applying.';}
+  else{vEl.classList.add('v-red');vEl.textContent='✗ Weak match — This role may not be right yet. See coaching panel below.';}
+
+  // keyword clouds
+  document.getElementById('cvCloud').innerHTML=cvKW.length
+    ?cvKW.map(k=>`<span class="pill pill-neutral">${k}</span>`).join('')
+    :'<span style="color:var(--text3);font-size:.8rem;">No tech keywords detected</span>';
+  document.getElementById('jdCloud').innerHTML=jdKW.length
+    ?[...matched.map(k=>`<span class="pill pill-match">✓ ${k}</span>`),
+       ...missing.map(k=>`<span class="pill pill-miss">✗ ${k}</span>`)].join('')
+    :'<span style="color:var(--text3);font-size:.8rem;">No tech keywords detected</span>';
+
+  // coaching
+  const items=[];
+  if(rs<50)items.push({type:'warn',icon:'⚠️',msg:'<strong>Weak remote signal</strong> — Add async tools you use (Notion, Loom, Slack) and mention timezone experience. Remote roles demand this evidence.'});
+  if(missing.length>3)items.push({type:'err',icon:'✗',msg:`<strong>Missing keywords:</strong> ${missing.slice(0,5).join(', ')}${missing.length>5?'…':''} — Either add these to your CV if you know them, or address gaps in your cover letter.`});
+  if(matched.length>0)items.push({type:'ok',icon:'✓',msg:`<strong>Good overlap on:</strong> ${matched.slice(0,4).join(', ')} — Make sure these appear near the top of your CV, not buried in a list.`});
+  if(cv.split(' ').length<100)items.push({type:'warn',icon:'📝',msg:'<strong>CV is too short</strong> — Expand your experience bullets with outcomes and metrics. "Led migration to Docker → reduced deploy time by 40%" beats "used Docker".'});
+  items.push({type:'tip',icon:'💡',msg:`<strong>Remote hiring tip:</strong> For ${jt.split('—')[0]||'this role'} in EMEA, recruiters scan for timezone flexibility and async writing ability in the first 10 seconds. Add an opening summary line.`});
+
+  document.getElementById('coachItems').innerHTML=items.map(i=>`
+    <div class="coaching-item">
+      <div class="ci-dot ${i.type==='warn'?'ci-warn':i.type==='err'?'ci-err':i.type==='ok'?'ci-ok':'ci-tip'}">${i.icon}</div>
+      <div class="coaching-body">${i.msg}</div>
+    </div>`).join('');
+  document.getElementById('coachingBox').style.display='block';
+
+  // AI OUTPUTS (simulated)
+  const resumeOut=document.getElementById('resumeOut');
+  const coverOut=document.getElementById('coverOut');
+  const titleOut=document.getElementById('titleOut');
+
+  resumeOut.innerHTML='<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:.3rem">Generating AI resume…</span></div>';
+  coverOut.innerHTML='<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:.3rem">Crafting cover letter…</span></div>';
+  titleOut.innerHTML='<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:.3rem">Optimizing job titles…</span></div>';
+
+  setTimeout(()=>{
+    const name=me||'[Your Name]';
+    const matchedStr=matched.slice(0,6).join(' · ');
+    resumeOut.textContent=`${name.toUpperCase()} — ${jt.split('—')[0].trim()||'Senior Software Engineer'}
+Remote-ready · EU timezones · Open to EMEA opportunities
+
+━━ PROFILE SUMMARY ━━
+Experienced software engineer with ${cv.match(/\d+\s*year/i)?cv.match(/\d+\s*year/i)[0]:'several years'} building scalable web applications in fast-paced distributed teams. Strong track record in ${matchedStr||'full-stack development'}, with a documentation-first, async-first remote working style. Delivered production features across fintech and SaaS products with zero-defect deployments.
+
+━━ CORE SKILLS ━━
+${cvKW.slice(0,18).join('  ·  ')}
+
+━━ REMOTE WORKING SKILLS ━━
+Async collaboration via Notion, Slack & Loom · Cross-timezone team leadership
+Documentation-first development · Daily standups across EU timezones
+
+━━ EXPERIENCE ━━
+[Extract from your CV above — AI will rewrite each bullet with impact metrics in the Pro version]
+→ Example: "Led React migration from CRA to Next.js → 60% improvement in First Contentful Paint"
+→ Example: "Architected GraphQL API serving 200K+ daily active users across 3 regions"
+
+━━ EDUCATION & CERTIFICATIONS ━━
+${cv.match(/BSc|MSc|PhD|Bachelor|Master|Cert[a-z]*/gi)?cv.match(/BSc|MSc|PhD|Bachelor|Master|Cert[a-z]*/gi).join('  ·  '):'[Your education from CV]'}
+
+━━ OPEN SOURCE & GITHUB ━━
+[Contributions, starred repos, and notable projects from your GitHub profile]
+
+[🔒 Full AI rewrite with impact metrics, ATS formatting & custom sections — upgrade to Pro]`;
+
+    const today=new Date();
+    coverOut.textContent=[
+    name,
+    '[Your City] · [your@email.com]',
+    today.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}),
+    '',
+    (hm||'Hiring Team'),
+    (co||'[Company Name]'),
+    (cl||'[Location]'),
+    '',
+    'Dear '+(hm ? hm.split(' ')[0] : 'Hiring Manager')+',',
+    '',
+    'I am writing to apply for the '+(jt||'role')+' at '+(co||'your company')+'. After reviewing the position closely, I am confident that my background in '+matched.slice(0,3).join(', ')+' maps directly to what you are building.',
+    '',
+    'Over the past '+(cv.match(/\d+\s*year/i)?cv.match(/\d+\s*year/i)[0]:'several years')+', I have worked in fully distributed product teams across EU timezones, which means I have had to be genuinely good at the things that make or break remote collaboration: clear async writing, proactive documentation, and structured communication. '+(co||'Your company')+' async-first culture resonates strongly with how I already work.',
+    '',
+    'On the technical side, '+matched.slice(0,4).join(', ')+' are tools I use daily in production — not just on a CV. '+(missing.length>0 ? 'I noted that '+missing[0]+' is mentioned in the job spec — I have exposure to this and would be prepared to share relevant examples in a call.' : 'My technical alignment with the stack you have outlined is strong and I can hit the ground running.'),
+    '',
+    'What I would bring beyond the technical: I am the person who writes the runbook, leaves meaningful PR descriptions, and proactively flags blockers before they become blockers. In a distributed team, that is not a soft skill — it is the job.',
+    '',
+    'I would love to talk through this role in more detail. I am available for a call any time that works across your team timezone.',
+    '',
+    'Warm regards,',
+    name,
+    '',
+    '[GitHub: '+(document.getElementById('portGH')&&document.getElementById('portGH').value?document.getElementById('portGH').value:'github.com/yourname')+']',
+    '[LinkedIn: '+(document.getElementById('portLI')&&document.getElementById('portLI').value?document.getElementById('portLI').value:'linkedin.com/in/yourname')+']',
+    '',
+    '[Pro: Fully personalized with company research, tone matching & recruiter language]'
+  ].join('\n');
+
+    titleOut.textContent=`RECOMMENDED JOB TITLE VARIANTS for ATS & LinkedIn
+(Use these exact strings when applying and updating your profile)
+
+1. Senior Full-Stack Engineer — React · TypeScript · Node.js
+2. Senior Software Engineer (Remote, EU)
+3. Full-Stack Developer — React / Node / PostgreSQL
+4. Senior Frontend Engineer — TypeScript · React · GraphQL
+5. Software Engineer II — Full-Stack (Fintech / SaaS)
+6. Lead Frontend Developer — React / Vue / TypeScript
+7. Remote Software Engineer EMEA — Full-Stack
+
+TIP: Use title #1 on your CV header, #3 or #4 on LinkedIn headline,
+and match the exact wording from each job description when applying.
+ATS systems score exact-match job titles higher.`;
+
+    showToast('✅ Analysis complete!');
+  },1800);
+}
+
+// ═══════════════════════════════════════════════
+// LINKEDIN OPTIMIZER
+// ═══════════════════════════════════════════════
+function optimizeLinkedIn(){
+  const url=document.getElementById('liURL').value;
+  const headline=document.getElementById('liHeadline').value;
+  const summary=document.getElementById('liSummary').value;
+  const target=document.getElementById('liTarget').value;
+  if(!headline||!summary){showToast('⚠️ Please fill in your headline and summary.');return;}
+
+  document.getElementById('liResults').style.display='block';
+  const h=document.getElementById('liHeadOut');
+  const a=document.getElementById('liAboutOut');
+  const s=document.getElementById('liSkillsOut');
+  h.innerHTML=a.innerHTML=s.innerHTML='<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:.3rem">Optimizing…</span></div>';
+
+  setTimeout(()=>{
+    h.textContent=`Senior Full-Stack Engineer (React · TypeScript · Node.js) | Open to Remote Roles in EMEA | EU Timezone ✓ | Fintech & SaaS`;
+    a.textContent=`I build production-grade web applications in React, TypeScript, and Node.js — and I know how to do it well across distributed teams in multiple timezones.
+
+Over 6+ years I've gone from writing my first API to leading cross-functional feature squads, shipping to hundreds of thousands of users, and mentoring developers early in their careers. Most of that work has been remote-first — which means I've had to develop strong async communication, documentation habits, and the kind of ownership that doesn't require a manager looking over my shoulder.
+
+What I care about building: products that solve real problems cleanly. What I care about in a team: high trust, clear communication, and people who write good PRs and even better runbooks.
+
+Technically, I'm strongest in the JavaScript ecosystem — React, TypeScript, Node.js, GraphQL — with solid backend experience in Python and PostgreSQL, and cloud infrastructure on AWS. I've worked in fintech (Paystack), SaaS, and open source, which gives me a useful range of contexts.
+
+I'm actively looking for senior remote engineering roles at European product companies or globally distributed teams with strong EU timezone overlap.
+
+→ Open to: Full-Stack, Frontend, or Technical Lead roles
+→ Available: Immediately
+→ Timezone: WAT/GMT (EU compatible)
+
+Let's connect if you're building something interesting.`;
+    s.textContent=`TOP 15 SKILLS TO FEATURE ON YOUR LINKEDIN PROFILE:
+(Add these in your Skills section — recruiters filter by these)
+
+1. React.js          9. AWS
+2. TypeScript        10. GraphQL  
+3. Node.js           11. PostgreSQL
+4. Full-Stack Dev.   12. Remote Work
+5. JavaScript        13. Agile / Scrum
+6. Docker            14. CI/CD
+7. Python            15. REST APIs
+8. GitHub Actions
+
+ALSO ADD: "Open to Work" badge (set to Remote, EU timezone)
+KEYWORD TIP: Put "Remote" and "EU" in your headline — LinkedIn
+search filters heavily on these terms for recruiter queries.`;
+    showToast('✅ LinkedIn optimized!');
+    document.getElementById('liResults').scrollIntoView({behavior:'smooth',block:'start'});
+  },1600);
+}
+
+// ═══════════════════════════════════════════════
+// GITHUB OPTIMIZER
+// ═══════════════════════════════════════════════
+function optimizeGitHub(){
+  const user=document.getElementById('ghUser').value;
+  const bio=document.getElementById('ghBio').value;
+  const repos=document.getElementById('ghRepos').value;
+  if(!user){showToast('⚠️ Please enter your GitHub username.');return;}
+
+  document.getElementById('ghResults').style.display='block';
+  const b=document.getElementById('ghBioOut');
+  const r=document.getElementById('ghReadmeOut');
+  const rd=document.getElementById('ghRepoOut');
+  b.innerHTML=r.innerHTML=rd.innerHTML='<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:.3rem">Optimizing…</span></div>';
+
+  setTimeout(()=>{
+    b.textContent=`Senior Full-Stack Engineer • React / TypeScript / Node.js • Open Source contributor • Remote-first • EU timezone • Open to opportunities`;
+    r.textContent=`### Hi, I'm ${user} 👋
+
+**Senior Full-Stack Engineer** specializing in React, TypeScript & Node.js  
+📍 Accra, Ghana • 🌍 Remote-first • 🕐 EU timezone compatible
+
+---
+
+**🔧 Tech Stack**
+\`React\` \`TypeScript\` \`Node.js\` \`PostgreSQL\` \`Docker\` \`AWS\` \`GraphQL\` \`Python\`
+
+**📊 GitHub Activity**
+- 🔥 1,200+ contributions in the last year
+- ⭐ 340+ stars across open source projects  
+- 🚀 8 public repositories, 3 production-ready tools
+
+**🌟 Featured Projects**
+| Project | Description | Stack | Stars |
+|---|---|---|---|
+| paytrack | Fintech payment reconciliation dashboard | React · Node · PostgreSQL | - |
+| openform | Open-source dynamic form builder | React · TypeScript | 340 ⭐ |
+| devnotes | CLI productivity tool for developers | Node.js | 120 ⭐ |
+
+**📫 Let's connect**  
+[LinkedIn](https://linkedin.com/in/${user}) • [Email](mailto:${user}@example.com) • Open to remote senior roles in EMEA
+
+---
+*I write clean code, good docs, and even better commit messages.*`;
+    rd.textContent=`OPTIMIZED REPO DESCRIPTIONS:
+(Update these on each repo's Settings page)
+
+paytrack:
+→ "Production-grade fintech payment reconciliation dashboard. React, Node.js, PostgreSQL. Built for high-volume transaction processing."
+→ Topics: react typescript nodejs postgresql fintech dashboard open-source
+
+openform:
+→ "Open-source dynamic form builder with conditional logic, multi-step flows & API integration. 340★ — used in production by 50+ teams."
+→ Topics: react forms open-source typescript low-code ui-components
+
+devnotes:
+→ "CLI tool for developer note-taking and knowledge management. Fast, offline-first, markdown-native. 120★"
+→ Topics: cli developer-tools productivity nodejs markdown notes
+
+PINNING TIP: Pin your top 3 repos on your profile page.
+README TIP: Add a demo GIF to each pinned repo — views increase 3–4× with a visual preview.`;
+    showToast('✅ GitHub optimized!');
+    document.getElementById('ghResults').scrollIntoView({behavior:'smooth',block:'start'});
+  },1500);
+}
+
+// ═══════════════════════════════════════════════
+// PORTFOLIO BUILDER
+// ═══════════════════════════════════════════════
+function buildPortfolio(){
+  const cv=document.getElementById('portCV').value;
+  const gh=document.getElementById('portGH').value;
+  const li=document.getElementById('portLI').value;
+  const email=document.getElementById('portEmail').value;
+  if(cv.length<40){showToast('⚠️ Please paste your CV to build the portfolio.');return;}
+
+  const kw=extractKW(cv);
+  const name=cv.match(/^([A-Z][a-z]+(?:\s[A-Z][a-z]+)+)/m)?.[1]||'Your Name';
+  const role=cv.match(/Senior\s[\w\s]+Developer|[\w]+\s[\w]+\sEngineer|Developer|Engineer/i)?.[0]||'Software Engineer';
+  const loc=cv.match(/Accra|Lagos|Nairobi|Cape Town|Johannesburg|Dakar/i)?.[0]||'Africa';
+  const ghUser=gh.replace(/.*github\.com\//,'').replace(/\//,'');
+
+  document.getElementById('portfolioOutput').style.display='block';
+  document.getElementById('portURL').textContent=`remoteready.io/p/${(name.split(' ')[0]||'dev').toLowerCase()}`;
+
+  const preview=document.getElementById('portPreview');
+  preview.innerHTML='<div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:.3rem">Building your portfolio…</span></div>';
+
+  setTimeout(()=>{
+    const featuredKW=kw.slice(0,5);
+    const otherKW=kw.slice(5,16);
+    preview.innerHTML=`
+<div class="port-hero">
+  <div class="port-avatar">👨‍💻</div>
+  <div>
+    <div class="port-name">${name}</div>
+    <div class="port-role">${role}</div>
+    <div class="port-loc">📍 ${loc} · Remote-ready · EU timezone compatible</div>
+    <div class="port-links">
+      ${gh?`<a href="${gh}" class="port-link" target="_blank">🐙 GitHub</a>`:''}
+      ${li?`<a href="${li}" class="port-link" target="_blank">💼 LinkedIn</a>`:''}
+      ${email?`<a href="mailto:${email}" class="port-link">✉️ Email</a>`:''}
+      <span class="port-link">🟢 Open to Work</span>
+    </div>
+  </div>
+</div>
+<div class="port-bio">Experienced ${role.toLowerCase()} with a track record of shipping production-quality software in distributed teams. I bring strong async communication skills, a documentation-first mindset, and genuine expertise in ${featuredKW.slice(0,3).join(', ')} — built through real-world fintech and SaaS product work. Currently seeking remote senior roles with EU-timezone overlap.</div>
+
+<div class="port-section-title">Core Technologies</div>
+<div class="skills-cloud">
+  ${featuredKW.map(k=>`<span class="skill-chip featured">${k}</span>`).join('')}
+  ${otherKW.map(k=>`<span class="skill-chip">${k}</span>`).join('')}
+</div>
+
+<div class="port-section-title">Featured Projects</div>
+<div class="projects-grid">
+  <div class="proj-card"><div class="proj-icon">💳</div><div class="proj-name">PayTrack</div><div class="proj-desc">Fintech payment reconciliation dashboard handling high-volume transactions with real-time reporting.</div><div class="proj-stack"><span class="proj-tag">React</span><span class="proj-tag">Node.js</span><span class="proj-tag">PostgreSQL</span></div></div>
+  <div class="proj-card"><div class="proj-icon">📋</div><div class="proj-name">OpenForm ⭐ 340</div><div class="proj-desc">Open-source dynamic form builder with conditional logic, multi-step flows and API integrations.</div><div class="proj-stack"><span class="proj-tag">TypeScript</span><span class="proj-tag">React</span><span class="proj-tag">Open Source</span></div></div>
+  <div class="proj-card"><div class="proj-icon">⚡</div><div class="proj-name">DevNotes ⭐ 120</div><div class="proj-desc">CLI productivity tool for developer note-taking. Offline-first, markdown-native, fast.</div><div class="proj-stack"><span class="proj-tag">Node.js</span><span class="proj-tag">CLI</span><span class="proj-tag">Markdown</span></div></div>
+</div>
+
+<div class="port-section-title">Experience</div>
+<div style="margin-bottom:1.5rem">
+  <div class="exp-item"><div class="exp-dot">🏦</div><div><div class="exp-role">Senior Frontend Developer</div><div class="exp-co">Paystack — Fintech · Remote</div><div class="exp-date">2021 – 2024 · 3 years</div></div></div>
+  <div class="exp-item"><div class="exp-dot">🇩🇪</div><div><div class="exp-role">Frontend Lead</div><div class="exp-co">Berlin-based startup · Hybrid → Remote</div><div class="exp-date">2019 – 2021 · 2 years</div></div></div>
+</div>
+
+<div style="background:rgba(0,229,195,.06);border:1px solid rgba(0,229,195,.18);border-radius:12px;padding:1rem 1.2rem;font-size:.82rem;color:var(--text2);">
+  💡 <strong style="color:var(--text)">This portfolio was AI-generated from your CV by RemoteReady EMEA.</strong> 
+  Download the HTML and deploy to Vercel, Netlify or GitHub Pages in under 5 minutes — free forever.
+</div>`;
+
+    document.getElementById('portHTMLRaw').value=`<!DOCTYPE html>\n<html>\n<!-- Full deployable portfolio HTML generated by RemoteReady EMEA -->\n<!-- To deploy: upload this file to Vercel, Netlify or GitHub Pages -->\n<!-- Pro users get a fully styled standalone file with no RemoteReady branding -->\n<body>\n${preview.innerHTML}\n</body>\n</html>`;
+    showToast('✅ Portfolio built! Download or copy HTML to deploy.');
+    document.getElementById('portfolioOutput').scrollIntoView({behavior:'smooth'});
+  },2000);
+}
+
+function downloadPortfolio(){
+  const html=document.getElementById('portHTMLRaw').value;
+  if(!html){showToast('⚠️ Build your portfolio first.');return;}
+  const a=document.createElement('a');
+  a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);
+  a.download='my-portfolio.html';a.click();
+  showToast('⬇️ Portfolio downloaded!');
+}
+
+// ═══════════════════════════════════════════════
+// COMPANY DIRECTORY
+// ═══════════════════════════════════════════════
+function renderCompanies(){filterCos();}
+
+function filterCos(){
+  const q=document.getElementById('coSearch').value.toLowerCase();
+  const country=document.getElementById('coCountry').value;
+  const policy=document.getElementById('coPolicy').value;
+  const stack=document.getElementById('coStack').value;
+
+  const filtered=COMPANIES.filter(c=>{
+    const matchQ=!q||c.name.toLowerCase().includes(q)||c.city.toLowerCase().includes(q)||c.desc.toLowerCase().includes(q)||c.stack.some(s=>s.toLowerCase().includes(q));
+    const matchC=!country||c.country===country;
+    const matchP=!policy||c.policy===policy;
+    const matchS=!stack||c.stack.some(s=>s.toLowerCase().includes(stack.toLowerCase()));
+    return matchQ&&matchC&&matchP&&matchS;
+  });
+
+  document.getElementById('coCount').textContent=`Showing ${filtered.length} of ${COMPANIES.length} companies`;
+  const grid=document.getElementById('coGrid');
+  if(!filtered.length){grid.innerHTML='<div class="no-results">No companies match your filters.<br><span style="font-size:.8rem">Try broadening your search.</span></div>';return;}
+
+  const FLAG={Germany:'🇩🇪',Netherlands:'🇳🇱',Portugal:'🇵🇹',Poland:'🇵🇱',UK:'🇬🇧',UAE:'🇦🇪','South Africa':'🇿🇦',Remote:'🌍'};
+  grid.innerHTML=filtered.map(c=>`
+<a href="${c.url}" target="_blank" rel="noopener" class="co-card">
+  <div class="co-name">${c.name}</div>
+  <div class="co-meta">${FLAG[c.country]||''} ${c.city}</div>
+  <div style="font-size:.76rem;color:var(--text2);line-height:1.4;margin-bottom:.6rem">${c.desc}</div>
+  <div class="co-tags">
+    <span class="ctag ${c.policy==='fully'?'t-remote':'t-hybrid'}">${c.policy==='fully'?'🌍 Fully Remote':'🏢 Hybrid'}</span>
+    <span class="ctag t-country">${FLAG[c.country]||''} ${c.country}</span>
+    ${c.stack.slice(0,2).map(s=>`<span class="ctag t-stack">${s}</span>`).join('')}
+  </div>
+</a>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// JOB ALERTS
+// ═══════════════════════════════════════════════
+const SAMPLE_JOBS=[
+  {role:'Senior React Engineer',co:'Shopware GmbH',loc:'Germany · Remote',time:'2h ago',new:true,salary:'€80–110K'},
+  {role:'Full-Stack Developer (Node.js)',co:'Remote.com',loc:'Portugal · Fully Remote',time:'4h ago',new:true,salary:'€70–90K'},
+  {role:'Backend Engineer — Go',co:'Giant Swarm',loc:'Germany · Fully Remote',time:'6h ago',new:false,salary:'€75–100K'},
+  {role:'Senior TypeScript Engineer',co:'Miro',loc:'Netherlands · Remote',time:'8h ago',new:false,salary:'€90–120K'},
+  {role:'DevOps Engineer (Kubernetes)',co:'SuSE',loc:'Germany · Fully Remote',time:'12h ago',new:false,salary:'€85–115K'},
+  {role:'Full-Stack Engineer',co:'Netguru',loc:'Poland · Fully Remote',time:'14h ago',new:false,salary:'€55–80K'},
+];
+
+function renderAlerts(){
+  document.getElementById('alertsList').innerHTML=SAMPLE_JOBS.map(j=>`
+<div class="alert-item">
+  <div class="alert-dot ${j.new?'ad-green':'ad-amber'}"></div>
+  <div style="flex:1">
+    <div class="alert-role">${j.role} ${j.new?'<span style="background:rgba(34,197,94,.12);color:#22c55e;font-size:.62rem;padding:.12rem .5rem;border-radius:8px;font-weight:700">NEW</span>':''}</div>
+    <div class="alert-meta">${j.co} · ${j.loc} · ${j.salary}</div>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+    <div class="alert-time">${j.time}</div>
+    <button class="btn btn-g btn-sm" onclick="preparePacket(this)">Prepare Packet</button>
+  </div>
+</div>`).join('');
+}
+
+function subscribeAlert(){
+  const e=document.getElementById('alertEmail').value;
+  const r=document.getElementById('alertRole').value;
+  if(!e||!e.includes('@')){showToast('⚠️ Please enter a valid email.');return;}
+  showToast(`🔔 Alert set for "${r}" roles! You'll hear from us at ${e}`);
+}
+
+// ═══════════════════════════════════════════════
+// UTILITY
+// ═══════════════════════════════════════════════
+function copyOut(id,btn){
+  const el=document.getElementById(id);
+  const text=el.value||el.textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const b=typeof btn==='string'?document.querySelector(`[onclick*="${btn}"]`):btn;
+    if(b){const orig=b.textContent;b.textContent='Copied!';setTimeout(()=>b.textContent=orig,1800);}
+    showToast('📋 Copied to clipboard!');
+  }).catch(()=>showToast('❌ Copy failed — please select manually.'));
+}
+
+function resetAll(){
+  document.getElementById('cvText').value='';
+  document.getElementById('jobDesc').value='';
+  document.getElementById('mMatch').textContent='—';
+  document.getElementById('mCV').textContent='—';
+  document.getElementById('mJD').textContent='—';
+  document.getElementById('mHit').textContent='—';
+  ['pb1','pb2','pb3'].forEach(id=>document.getElementById(id).style.width='0%');
+  ['pct1','pct2','pct3'].forEach(id=>document.getElementById(id).textContent='0%');
+  document.getElementById('verdict').className='verdict v-idle';
+  document.getElementById('verdict').textContent='⚖️ Run analysis to get your apply verdict';
+  document.getElementById('cvCloud').innerHTML='—';
+  document.getElementById('jdCloud').innerHTML='—';
+  document.getElementById('coachingBox').style.display='none';
+  document.getElementById('resumeOut').textContent='Click "Analyze & Generate" to build your AI-optimized resume…';
+  document.getElementById('coverOut').textContent='Your tailored cover letter will appear here…';
+  document.getElementById('titleOut').textContent='Your ATS-optimized job title suggestions will appear here…';
+  showToast('↺ Reset complete');
+}
+
+let toastTimer;
+function showToast(msg){
+  clearTimeout(toastTimer);
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  toastTimer=setTimeout(()=>t.style.display='none',3200);
+}
+
+
+function preparePacket(btn){
+  const item=btn.closest('.alert-item');
+  const role=item.querySelector('.alert-role').textContent.replace('NEW','').trim();
+  showToast('📦 Apply packet ready for: '+role);
+}
+
+function openSelar(plan){
+  showToast(`🛒 Redirecting to Selar checkout for ${plan} plan…`);
+  // Replace with real Selar product URLs:
+  // window.open('https://selar.co/your-product-id','_blank');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  renderCompanies();
+  renderAlerts();
+});
+</script>
+</body>
+</html>
